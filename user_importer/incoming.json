@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Ani" },
+  { "id": 2, "name": "Mariam" },
+  { "id": 3, "name": "Mariam" },
+  { "id": 2, "name": "Duplicate record" },
+  null
+]
