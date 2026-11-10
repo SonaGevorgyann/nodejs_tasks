@@ -43,6 +43,7 @@ class ImportJob extends EventEmitter {
                 }
 
                 this.#seenIds.add(record.id);
+                record.timestamp = new Date().getTime();
                 accepted.push(record);
 
                 this.emit("accepted", record);

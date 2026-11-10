@@ -10,11 +10,11 @@ job.on("started", () => {
 });
 
 job.on("accepted", (record) => {
-    console.log("Accepted:", record);
+    console.log("EVENT:Accepted:", record);
 });
 
 job.on("skipped", (record, reason) => {
-    console.log("Skipped:", record, "-", reason);
+    console.log("EVENT: Skipped:", record, "-", reason);
 });
 
 job.on("accepted", () => {
@@ -27,6 +27,8 @@ job.on("skipped", () => {
 
 job.on("completed", () => {
     console.log(`Imported ${audit.imported}, skipped ${audit.skipped}`);
+    const auditPath = audit.save();
+    console.log("Audit saved:", auditPath);
 });
 
 job.on("error", (error) => {

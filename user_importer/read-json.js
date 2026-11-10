@@ -10,6 +10,7 @@ function readJson(filePath, callback) {
     try {
       data = JSON.parse(text);
     } catch (parseError) {
+      console.error("Failed to parse JSON: Test", parseError.message);
       return callback(parseError);
     }
 
