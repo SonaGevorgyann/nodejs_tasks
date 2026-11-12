@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Import Dashboard</title>
+
+    <style>
+        [hidden] { display: none !important; }
+
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f5f5f5; }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .column { background-color: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+        h2 { margin-top: 0; }
+        .user { padding: 10px 0; border-bottom: 1px solid #eee; }
+        select { width: 100%; padding: 10px; margin: 10px 0 20px; font-size: 16px; }
+        #auditDetails { line-height: 1.8; }
+
+        .loader { padding: 10px 0; color: #555; }
+        .error { padding: 10px 0; color: #b00020; }
+    </style>
+</head>
+
+<body>
+    <h1>User Import Dashboard</h1>
+
+    <div class="dashboard">
+
+        <div class="column">
+            <h2>Users</h2>
+            <div id="usersLoader" class="loader" hidden>Loading users...</div>
+            <div id="usersError" class="error" hidden></div>
+            <div id="users"></div>
+        </div>
+
+        <div class="column">
+            <h2>Audits</h2>
+
+            <label for="auditSelect">Select timestamp:</label>
+            <select id="auditSelect">
+                <option value="">Select an audit</option>
+            </select>
+            <div id="auditsLoader" class="loader" hidden>Loading audits...</div>
+            <div id="auditsError" class="error" hidden></div>
+
+            <div id="auditDetailsLoader" class="loader" hidden>Loading audit details...</div>
+            <div id="auditDetailsError" class="error" hidden></div>
+            <div id="auditDetails"></div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
