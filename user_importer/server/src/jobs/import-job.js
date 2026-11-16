@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const fs = require("fs");
 const readJson = require("../utils/read-json");
-const { validateRecord } = require("../validators/validation");
+const { validateRecord } = require("../utils/validators/validation");
 
 class ImportJob extends EventEmitter {
     #seenIds = new Set();

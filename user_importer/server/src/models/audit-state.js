@@ -12,7 +12,12 @@ const audit = {
 
     toData(timestamp) {
         return { timestamp, imported: this.imported, skipped: this.skipped };
-    }
+    },
+
+    reset() {
+    this.imported = 0;
+    this.skipped = 0;
+}
 };
 
 module.exports = audit;

@@ -1,61 +1,61 @@
 const directoryModel = require("../models/directory.model");
 const auditModel = require("../models/audit.model");
 const { isAuditFileName, extractTimestamp } = require("../utils/audit-file-name");
+const { runImport } = require("../services/import-service");
 
-function sendError(res, error) {
-    console.error(error);
+function getUsers(callback) {
+    directoryModel.readAll(callback);
+}
 
-    if (error.code === "ENOENT") {
-        res.status(404).json({ error: "Not found" });
+function getUserById(id, callback) {
+    directoryModel.readAll((error, users) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+
+        const user = users.find((item) => String(item.id) === String(id));
+
+        if (!user) {
+            const notFoundError = new Error("User not found");
+            notFoundError.status = 404;
+            callback(notFoundError);
+            return;
+        }
+
+        callback(null, user);
+    });
+}
+
+function getAudits(callback) {
+    auditModel.listFileNames((error, fileNames) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+
+        const audits = fileNames
+            .filter(isAuditFileName)
+            .map((fileName) => ({ fileName, timestamp: extractTimestamp(fileName) }));
+
+        callback(null, audits);
+    });
+}
+
+function getAudit(fileName, callback) {
+    if (!isAuditFileName(fileName)) {
+        const error = new Error("Invalid audit file name");
+        error.status = 400;
+        callback(error);
         return;
     }
 
-    res.status(500).json({ error: "Server error" });
+    auditModel.readByFileName(fileName, callback);
 }
 
-function toAuditSummary(fileName) {
-    if (!isAuditFileName(fileName)) {
-        throw new Error(`Not an audit file: ${fileName}`);
-    }
-
-    return { fileName, timestamp: extractTimestamp(fileName) };
+function startImport(callback) {
+    runImport();
+    callback(null);
 }
 
-function getUsers(req, res) {
-    directoryModel.readAll((error, users) => {
-        if (error) {
-            sendError(res, error);
-            return;
-        }
-
-        res.json(users);
-    });
-}
-
-function getAudits(req, res) {
-    auditModel.listFileNames((error, fileNames) => {
-        if (error) {
-            sendError(res, error);
-            return;
-        }
-
-        try {
-            res.json(fileNames.map(toAuditSummary));
-        } catch (summaryError) {
-            sendError(res, summaryError);
-        }
-    });
-}
-
-function getAudit(req, res) {
-    auditModel.readByFileName(req.params.fileName, (error, audit) => {
-        if (error) {
-            sendError(res, error);
-            return;
-        }
-
-        res.json(audit);
-    });
-}
-
-module.exports = { getUsers, getAudits, getAudit };
+module.exports = { getUsers, getUserById, getAudits, getAudit, startImport };

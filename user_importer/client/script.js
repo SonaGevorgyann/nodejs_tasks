@@ -1,5 +1,7 @@
 const API_URL = "http://localhost:3000/api";
 
+
+// TODO what is going here, explain DOM 
 const usersBox = document.getElementById("users");
 const auditSelect = document.getElementById("auditSelect");
 const auditDetails = document.getElementById("auditDetails");
@@ -93,16 +95,21 @@ function loadAuditDetails(fileName) {
     hide("auditDetailsError");
     auditDetails.innerHTML = "";
     show("auditDetailsLoader");
+    auditSelect.disabled = true;
 
     fetchJson(`${API_URL}/audits/${encodeURIComponent(fileName)}`)
         .then(renderAuditDetails)
         .catch(() => showError("auditDetailsError", "Failed to load audit."))
-        .finally(() => hide("auditDetailsLoader"));
+        .finally(() => {
+            auditSelect.disabled = false;
+            hide("auditDetailsLoader");
+        });
 }
 
 auditSelect.addEventListener("change", () => {
     if (!auditSelect.value) {
         auditDetails.innerHTML = "";
+        hide("auditDetailsError");
         return;
     }
     loadAuditDetails(auditSelect.value);

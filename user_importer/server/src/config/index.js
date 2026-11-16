@@ -6,6 +6,8 @@ module.exports = {
     port: process.env.PORT || 3000,
     paths: {
         directoryFile: path.join(serverRoot, "output", "directory.json"),
-        auditsDir: path.join(serverRoot, "output", "audits")
+        auditsDir: path.join(serverRoot, "output", "audits"),
+        importInputFile: path.join(serverRoot, "input", "incoming.json"),
+        importOutputFile: path.join(serverRoot, "output", "directory.json")
     }
 };
