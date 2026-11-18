@@ -2,5 +2,8 @@
   { "id": 1, "name": "Ani" },
   { "id": 2, "name": "Mariam" },
   { "id": 4, "name": "Duplicate record" },
+  { "id": 3, "name": "Mariam" },
+  { "id": 2, "name": "Mariam" },
+
   null
 ]
