@@ -1,3 +1,10 @@
+class AppError extends Error {
+    constructor(status, message) {
+        super(message);
+        this.status = status;
+    }
+}
+
 function errorHandler(error, req, res, next) {
     console.error(error);
 
@@ -14,4 +21,4 @@ function errorHandler(error, req, res, next) {
     res.status(500).json({ error: "Server error" });
 }
 
-module.exports = errorHandler;
+module.exports = { errorHandler, AppError };

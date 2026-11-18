@@ -1,6 +1,6 @@
 const ImportJob = require("../jobs/import-job");
 const audit = require("../models/audit-state");
-const { registerListeners } = require("../listeners/import-listeners");
+const { registerListeners } = require("../utils/import-listeners");
 const { paths } = require("../config");
 
 function runImport() {

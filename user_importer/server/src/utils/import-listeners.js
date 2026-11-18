@@ -1,14 +1,30 @@
 const audit = require("../models/audit-state");
 const auditModel = require("../models/audit.model");
 const { buildAuditFileName } = require("../utils/audit-file-name");
-const {
-    logStarted,
-    logAccepted,
-    logSkipped,
-    logSummary,
-    logError,
-    logAuditSaved
-} = require("../utils/logger");
+
+function logStarted() {
+    console.log("Import started");
+}
+
+function logAccepted(record) {
+    console.log("EVENT: Accepted:", record);
+}
+
+function logSkipped(record, reason) {
+    console.log("EVENT: Skipped:", record, "-", reason);
+}
+
+function logSummary() {
+    console.log(`Imported ${audit.imported}, skipped ${audit.skipped}`);
+}
+
+function logAuditSaved(auditPath) {
+    console.log("Audit saved:", auditPath);
+}
+
+function logError(error) {
+    console.error("Import failed:", error.message);
+}
 
 function markProcessAsFailed() {
     process.exitCode = 1;
@@ -28,7 +44,7 @@ function saveAudit(callback) {
 }
 
 function handleCompleted() {
-    logSummary(audit.imported, audit.skipped);
+    logSummary();
 
     saveAudit((error, auditPath) => {
         if (error) {
