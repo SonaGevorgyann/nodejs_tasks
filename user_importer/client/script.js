@@ -1,63 +1,86 @@
+// 1. DOM ELEMENTS
+// Find the HTML elements.
 const API_URL = "http://localhost:3000/api";
+const DELAY_MS = 2000;
 
-
-// TODO what is going here, explain DOM 
 const usersBox = document.getElementById("users");
+const usersLoader = document.getElementById("usersLoader");
+const usersError = document.getElementById("usersError");
+
 const auditSelect = document.getElementById("auditSelect");
+const auditsLoader = document.getElementById("auditsLoader");
+const auditsError = document.getElementById("auditsError");
+
 const auditDetails = document.getElementById("auditDetails");
+const auditDetailsLoader = document.getElementById("auditDetailsLoader");
+const auditDetailsError = document.getElementById("auditDetailsError");
 
-// ---------- small helpers ----------
 
-function fetchJson(url) {
-    return fetch(url).then(response => {
-        if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-        }
-        return response.json();
-    });
-}
+// 2. HELPER FUNCTIONS
+// Functions for displaying data and errors.
 
-function show(id) {
-    document.getElementById(id).hidden = false;
-}
-
-function hide(id) {
-    document.getElementById(id).hidden = true;
-}
-
-function showError(id, message) {
-    const element = document.getElementById(id);
+function showError(element, message) {
     element.textContent = message;
     element.hidden = false;
 }
 
-// ---------- users ----------
+function clear(element) {
+    element.innerHTML = "";
+}
 
-function renderUsers(users) {
-    usersBox.innerHTML = "";
+// 3. LOAD USERS
+// Fetch users from the backend.
 
-    users.forEach(user => {
+function renderUSers(users) {
+    users.forEach(function(user) {
         const div = document.createElement("div");
-        div.className = "user";
-        div.textContent = `${user.id} - ${user.name}`;
+
+        div.textContent = user.id + '-' + user.name;
         usersBox.appendChild(div);
     });
 }
 
-function loadUsers() {
-    hide("usersError");
-    show("usersLoader");
+function getJson(url, callback) {
+    const request = new XMLHttpRequest();
 
-    fetchJson(`${API_URL}/users`)
-        .then(renderUsers)
-        .catch(() => showError("usersError", "Failed to load users."))
-        .finally(() => hide("usersLoader"));
+    request.onload = function() {
+        if(request.status < 200 || request.status >= 300 )
+        {
+            callback(new Error("Request failed: " + request.status));
+            return;
+        }
+        const data = JSON.parse(request.responseText);
+        callback(null, data);
+    };
+
+    request.open("GET", url);
+    request.send();
 }
 
-// ---------- audits list (the select) ----------
+function loadUsers() {
+    usersLoader.hidden = false;
+    usersError.hidden = true;
+
+    waitAsync(DELAY_MS, function() {
+        getJson(API_URL + "/users", function(error, users) {
+            usersLoader.hidden = true;
+
+            if(error)
+            {
+                showError(usersError, error.message);
+                return;
+            }
+            renderUSers(users);
+        });
+    });
+    
+}
+
+// 4. LOAD AUDITS
+// Fetch audits and populate the dropdown.
 
 function renderAuditOptions(audits) {
-    audits.forEach(audit => {
+    audits.forEach(function(audit) {
         const option = document.createElement("option");
         option.value = audit.fileName;
         option.textContent = audit.timestamp;
@@ -66,56 +89,81 @@ function renderAuditOptions(audits) {
 }
 
 function loadAudits() {
-    hide("auditsError");
-    show("auditsLoader");
-    auditSelect.disabled = true;
+    auditsLoader.hidden = false;
+    auditsError.hidden = true;
 
-    fetchJson(`${API_URL}/audits`)
-        .then(renderAuditOptions)
-        .catch(() => showError("auditsError", "Failed to load audits."))
-        .finally(() => {
-            auditSelect.disabled = false;
-            hide("auditsLoader");
+    waitAsync(DELAY_MS, function() {
+        getJson(API_URL + "/audits", function(error, audits) {
+            auditsLoader.hidden = true;
+
+            if(error)
+            {
+                showError(auditsError, error.message);
+                return;
+            }
+            renderAuditOptions(audits);
         });
+    });
+    
 }
 
-// ---------- one audit's details ----------
+function waitAsync(ms, callback) {
+    setTimeout(callback, ms);
+}
+// 5. LOAD AUDIT DETAILS
+// Fetch details for the selected audit.
+
 
 function renderAuditDetails(audit) {
-    auditDetails.innerHTML = "";
+    clear(auditDetails);
 
-    ["timestamp", "imported", "skipped"].forEach(key => {
+    ["timestamp", "imported", "skipped"].forEach(function(key) {
         const p = document.createElement("p");
-        p.textContent = `${key}: ${audit[key]}`;
+        p.textContent = key + ":" + audit[key];
         auditDetails.appendChild(p);
     });
 }
 
-function loadAuditDetails(fileName) {
-    hide("auditDetailsError");
-    auditDetails.innerHTML = "";
-    show("auditDetailsLoader");
-    auditSelect.disabled = true;
 
-    fetchJson(`${API_URL}/audits/${encodeURIComponent(fileName)}`)
-        .then(renderAuditDetails)
-        .catch(() => showError("auditDetailsError", "Failed to load audit."))
-        .finally(() => {
-            auditSelect.disabled = false;
-            hide("auditDetailsLoader");
+function loadAuditDetails(filename) {
+    const url = API_URL + "/audits/" + encodeURIComponent(filename);
+
+    auditDetailsLoader.hidden = false;
+    auditDetailsError.hidden = true;
+
+    waitAsync(DELAY_MS, function() {
+            getJson(url, function(error, audit) {
+            auditDetailsLoader.hidden = true;
+
+            if(error)
+            {
+                showError(auditDetailsError, error.message);
+                return;
+            }
+            renderAuditDetails(audit);
         });
+    });
+
 }
 
-auditSelect.addEventListener("change", () => {
-    if (!auditSelect.value) {
-        auditDetails.innerHTML = "";
-        hide("auditDetailsError");
+// 6. EVENT LISTENERS
+// React to user interactions.
+
+
+function handleAuditChange() {
+    if(!(auditSelect.value))
+    {
+        clear(auditDetails);
         return;
     }
     loadAuditDetails(auditSelect.value);
-});
+}
 
-// ---------- start ----------
+
+
+auditSelect.addEventListener("change", handleAuditChange);
+// 7. INITIALIZATION
+// Start loading users and audits.
 
 loadUsers();
 loadAudits();
