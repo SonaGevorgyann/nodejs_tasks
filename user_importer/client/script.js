@@ -31,38 +31,90 @@ function clear(element) {
 // 3. LOAD USERS
 // Fetch users from the backend.
 
-function renderUSers(users) {
+
+function sendRequest(method, url, body, callback) {
+    const request = new XMLHttpRequest();
+
+    request.onload = function() {
+        if (request.status < 200 || request.status >= 300) {
+            callback(new Error("Request failed: " + request.status));
+            return;
+        }
+
+        let data = null;
+
+        if (request.responseText) {
+            try {
+                data = JSON.parse(request.responseText);
+            } catch (e) {
+                callback(new Error("Invalid response from server"));
+                return;
+            }
+        }
+
+        callback(null, data);
+    };
+
+    request.onerror = function() {
+        callback(new Error("Network error"));
+    };
+
+    request.open(method, url);
+
+    if (body !== undefined) {
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(JSON.stringify(body));
+    } else {
+        request.send();
+    }
+}
+
+
+function deleteUser(id) {
+    if (!confirm("Delete user " + id + "?")) return;
+
+    usersError.hidden = true;
+
+    sendRequest("DELETE", API_URL + "/users/" + id, undefined, function(error) {
+        if (error) {
+            showError(usersError, error.message);
+            return;
+        }
+        loadUsers();
+    });
+}
+
+
+function renderUsers(users) {
+    clear(usersBox);
+
     users.forEach(function(user) {
         const div = document.createElement("div");
 
-        div.textContent = user.id + '-' + user.name;
+        const label = document.createElement("span");
+        label.textContent = user.id + " - " + user.name;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", function() {
+            deleteUser(user.id);
+        });
+
+        div.appendChild(label);
+        div.appendChild(document.createTextNode(" "));
+        div.appendChild(deleteButton);
+
         usersBox.appendChild(div);
     });
 }
 
-function getJson(url, callback) {
-    const request = new XMLHttpRequest();
-
-    request.onload = function() {
-        if(request.status < 200 || request.status >= 300 )
-        {
-            callback(new Error("Request failed: " + request.status));
-            return;
-        }
-        const data = JSON.parse(request.responseText);
-        callback(null, data);
-    };
-
-    request.open("GET", url);
-    request.send();
-}
 
 function loadUsers() {
     usersLoader.hidden = false;
     usersError.hidden = true;
 
     waitAsync(DELAY_MS, function() {
-        getJson(API_URL + "/users", function(error, users) {
+        sendRequest("GET", API_URL + "/users", undefined, function(error, users) {
             usersLoader.hidden = true;
 
             if(error)
@@ -70,11 +122,28 @@ function loadUsers() {
                 showError(usersError, error.message);
                 return;
             }
-            renderUSers(users);
+            renderUsers(users);
         });
     });
     
 }
+// CREATE DELETE UPDATE SAVE BUTTONS FOR USERS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // 4. LOAD AUDITS
 // Fetch audits and populate the dropdown.
@@ -93,11 +162,10 @@ function loadAudits() {
     auditsError.hidden = true;
 
     waitAsync(DELAY_MS, function() {
-        getJson(API_URL + "/audits", function(error, audits) {
+        sendRequest("Get", API_URL + "/audits", undefined, function(error, audits) {
             auditsLoader.hidden = true;
 
-            if(error)
-            {
+            if(error)  {
                 showError(auditsError, error.message);
                 return;
             }
@@ -128,11 +196,37 @@ function renderAuditDetails(audit) {
 function loadAuditDetails(filename) {
     const url = API_URL + "/audits/" + encodeURIComponent(filename);
 
+    clear(auditDetails);
+    auditDetailsLoader.hidden = false;
+    auditDetailsError.hidden = true;
+
+    sendRequest("Get", url, undefined, function(error, audit) {
+        //auditDetailsLoader.hidden = true;
+
+        if(error)
+        {
+            showError(auditDetailsError, error.message);
+        }
+        else {
+            waitAsync(DELAY_MS, function() {
+                auditDetailsLoader.hidden = true;
+                renderAuditDetails(audit);
+            });
+        }
+    });
+}
+
+
+
+function loadAuditDetails2(filename) {
+    const url = API_URL + "/audits/" + encodeURIComponent(filename);
+
+    clear(auditDetails);
     auditDetailsLoader.hidden = false;
     auditDetailsError.hidden = true;
 
     waitAsync(DELAY_MS, function() {
-            getJson(url, function(error, audit) {
+        sendRequest("Get", url, undefined, function(error, audit) {
             auditDetailsLoader.hidden = true;
 
             if(error)
@@ -143,7 +237,6 @@ function loadAuditDetails(filename) {
             renderAuditDetails(audit);
         });
     });
-
 }
 
 // 6. EVENT LISTENERS
@@ -151,12 +244,12 @@ function loadAuditDetails(filename) {
 
 
 function handleAuditChange() {
-    if(!(auditSelect.value))
-    {
+    if(!(auditSelect.value)){
         clear(auditDetails);
-        return;
+    } else {
+      loadAuditDetails(auditSelect.value);
     }
-    loadAuditDetails(auditSelect.value);
+  
 }
 
 

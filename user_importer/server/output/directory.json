@@ -2,21 +2,11 @@
   {
     "id": 1,
     "name": "Ani",
-    "timestamp": 1794987701539
+    "timestamp": 1795444527073
   },
   {
-    "id": 2,
-    "name": "Mariam",
-    "timestamp": 1794987701540
-  },
-  {
-    "id": 4,
-    "name": "Duplicate record",
-    "timestamp": 1794987701540
-  },
-  {
-    "id": 3,
-    "name": "Mariam",
-    "timestamp": 1794987701540
+    "id": 7,
+    "name": "Simon",
+    "timestamp": 1795444527076
   }
 ]

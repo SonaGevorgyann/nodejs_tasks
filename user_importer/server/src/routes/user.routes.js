@@ -25,4 +25,26 @@ router.get("/users/:id", (req, res, next) => {
     });
 });
 
+router.delete("/users/:id", (req, res, next) => {
+    userController.deleteUser(req.params.id, (error) => {
+        if (error) {
+            next(error);
+            return;
+        }
+
+        res.status(204).end();
+    });
+});
+
+router.put("/users/:id", (req, res, next) => {
+    userController.updateUser(req.params.id, req.body.name, (error, user) => {
+        if(error) {
+            next(error);
+            return;
+        }
+        res.json(user);
+    })
+
+});
+
 module.exports = router;

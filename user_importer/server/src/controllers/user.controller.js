@@ -8,4 +8,12 @@ function getUserById(id, callback) {
     userModel.readById(id, callback);
 }
 
-module.exports = { getUsers, getUserById};
+function deleteUser(id, callback) {
+    userModel.deleteById(id, callback);
+}
+
+function updateUser(id, name, callback) {
+    userModel.updateById(id, name, callback);
+}
+
+module.exports = { getUsers, getUserById, deleteUser, updateUser };
