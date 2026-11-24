@@ -1,10 +1,12 @@
 const { Router } = require("express");
-const controller = require("../controllers/controller");
+const userRoutes = require("./user.routes");
+const auditRoutes = require("./audit.routes");
+const importRoutes = require("./import.routes");
 
 const router = Router();
 
-router.get("/users", controller.getUsers);
-router.get("/audits", controller.getAudits);
-router.get("/audits/:fileName", controller.getAudit);
+router.use(userRoutes);
+router.use(auditRoutes);
+router.use(importRoutes);
 
 module.exports = router;

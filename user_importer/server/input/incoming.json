@@ -1,6 +1,14 @@
 [
   { "id": 1, "name": "Ani" },
+  { "id": 2, "name": "Ani" },
+  { "id": 3, "name": "Ani" },
+  { "id": 4, "name": "Ani" },
   { "id": 2, "name": "Mariam" },
   { "id": 4, "name": "Duplicate record" },
+  { "id": 3, "name": "Mariam" },
+  { "id": 7, "name": "Simon" },
+  { "id": 3, "name": "Ani" },
+  { "id": 2, "name": "Mariam" },
+
   null
 ]

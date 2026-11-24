@@ -4,22 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Import Dashboard</title>
-
-    <style>
-        [hidden] { display: none !important; }
-
-        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f5f5f5; }
-        h1 { text-align: center; margin-bottom: 30px; }
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .column { background-color: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
-        h2 { margin-top: 0; }
-        .user { padding: 10px 0; border-bottom: 1px solid #eee; }
-        select { width: 100%; padding: 10px; margin: 10px 0 20px; font-size: 16px; }
-        #auditDetails { line-height: 1.8; }
-
-        .loader { padding: 10px 0; color: #555; }
-        .error { padding: 10px 0; color: #b00020; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -31,6 +16,7 @@
             <h2>Users</h2>
             <div id="usersLoader" class="loader" hidden>Loading users...</div>
             <div id="usersError" class="error" hidden></div>
+            <input id="searchInput" type="text" placeholder="Search users by name...">
             <div id="users"></div>
         </div>
 
