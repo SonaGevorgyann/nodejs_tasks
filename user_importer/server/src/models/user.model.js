@@ -11,17 +11,15 @@ function readById(id, callback) {
     readAll((error, users) => {
         if (error) {
             callback(error);
-            return;
+        } else {
+            const user = users.find((item) => String(item.id) === String(id));
+
+            if (!user) {
+                callback(new AppError(404, "User not found"));
+            } else {
+                callback(null, user);
+            }
         }
-
-        const user = users.find((item) => String(item.id) === String(id));
-
-        if (!user) {
-            callback(new AppError(404, "User not found"));
-            return;
-        }
-
-        callback(null, user);
     });
 }
 
@@ -29,59 +27,52 @@ function deleteById(id, callback) {
     readAll((error, users) => {
         if (error) {
             callback(error);
-            return;
-        }
+        } else {
+            const index = users.findIndex((item) => String(item.id) === String(id));
 
-        const index = users.findIndex((item) => String(item.id) === String(id));
+            if (index === -1) {
+                callback(new AppError(404, "User not found"));
+            } else {
+                users.splice(index, 1);
 
-        if (index === -1) {
-            callback(new AppError(404, "User not found"));
-            return;
-        }
-
-        users.splice(index, 1);
-
-        writeJson(paths.directoryFile, users, (writeError) => {
-            if (writeError) {
-                callback(writeError);
-                return;
+                writeJson(paths.directoryFile, users, (writeError) => {
+                    if (writeError) {
+                        callback(writeError);
+                    } else {
+                        callback(null);
+                    }
+                });
             }
-
-            callback(null);
-        });
+        }
     });
 }
-
 
 function updateById(id, name, callback) {
     if (typeof name !== "string" || !name.trim()) {
         callback(new AppError(400, "Name is required"));
-        return;
-    }
+    } else {
+        readAll((error, users) => {
+            if (error) {
+                callback(error);
+            } else {
+                const user = users.find((item) => String(item.id) === String(id));
 
-    readAll((error, users) => {
-        if (error) {
-            callback(error);
-            return;
-        }
+                if (!user) {
+                    callback(new AppError(404, "User not found"));
+                } else {
+                    user.name = name.trim();
 
-        const user = users.find((item) => String(item.id) === String(id));
-
-        if (!user) {
-            callback(new AppError(404, "User not found"));
-            return;
-        }
-
-        user.name = name.trim();
-
-        writeJson(paths.directoryFile, users, (writeError) => {
-            if(writeError) {
-                callback(writeError);
-                return;
+                    writeJson(paths.directoryFile, users, (writeError) => {
+                        if (writeError) {
+                            callback(writeError);
+                        } else {
+                            callback(null, user);
+                        }
+                    });
+                }
             }
-            callback(null, user);
         });
-    })
+    }
 }
 
 module.exports = { readAll, readById, deleteById, updateById };

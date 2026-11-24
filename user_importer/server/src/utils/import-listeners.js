@@ -49,10 +49,10 @@ function handleCompleted() {
     saveAudit((error, auditPath) => {
         if (error) {
             handleError(error);
-            return;
         }
-
-        logAuditSaved(auditPath);
+        else {
+            logAuditSaved(auditPath);
+        }
     });
 }
 

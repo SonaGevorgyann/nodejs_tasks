@@ -4,9 +4,10 @@ function writeJson(filePath, data, callback) {
     fs.writeFile(filePath, JSON.stringify(data, null, 2), "utf8", (error) => {
         if (error) {
             callback(error);
-            return;
         }
-        callback(null);
+        else {
+            callback(null);
+        }
     });
 }
 

@@ -7,10 +7,10 @@ router.get("/users", (req, res, next) => {
     userController.getUsers((error, users) => {
         if (error) {
             next(error);
-            return;
         }
-
-        res.json(users);
+        else {
+            res.json(users);
+        }
     });
 });
 
@@ -18,10 +18,10 @@ router.get("/users/:id", (req, res, next) => {
     userController.getUserById(req.params.id, (error, user) => {
         if (error) {
             next(error);
-            return;
         }
-
-        res.json(user);
+        else {
+            res.json(user);
+        }
     });
 });
 
@@ -29,10 +29,10 @@ router.delete("/users/:id", (req, res, next) => {
     userController.deleteUser(req.params.id, (error) => {
         if (error) {
             next(error);
-            return;
         }
-
-        res.status(204).end();
+        else {
+            res.status(204).end();
+        }
     });
 });
 
@@ -40,9 +40,10 @@ router.put("/users/:id", (req, res, next) => {
     userController.updateUser(req.params.id, req.body.name, (error, user) => {
         if(error) {
             next(error);
-            return;
         }
-        res.json(user);
+        else {
+            res.json(user);
+        }
     })
 
 });

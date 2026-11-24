@@ -35,10 +35,10 @@ function readAll(callback) {
 function readByFileName(fileName, callback) {
     if (!isAuditFileName(fileName)) {
         callback(new AppError(400, "Invalid audit file name"));
-        return;
     }
-
-    readJson(buildFilePath(fileName), callback);
+    else {
+        readJson(buildFilePath(fileName), callback);
+    }
 }
 
 function ensureAuditsDir(callback) {
@@ -51,10 +51,10 @@ function writeAuditFile(fileName, auditData, callback) {
     fs.writeFile(filePath, JSON.stringify(auditData, null, 2), (error) => {
         if (error) {
             callback(error);
-            return;
         }
-
-        callback(null, filePath);
+        else {
+            callback(null, filePath);
+        }
     });
 }
 
@@ -62,10 +62,10 @@ function save(fileName, auditData, callback) {
     ensureAuditsDir((error) => {
         if (error) {
             callback(error);
-            return;
         }
-
-        writeAuditFile(fileName, auditData, callback);
+        else {
+            writeAuditFile(fileName, auditData, callback);
+        }
     });
 }
 

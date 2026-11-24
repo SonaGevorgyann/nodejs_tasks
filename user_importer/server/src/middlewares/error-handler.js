@@ -10,15 +10,11 @@ function errorHandler(error, req, res, next) {
 
     if (error.code === "ENOENT") {
         res.status(404).json({ error: "Not found" });
-        return;
-    }
-
-    if (error.status) {
+    } else if (error.status) {
         res.status(error.status).json({ error: error.message });
-        return;
+    } else {
+        res.status(500).json({ error: "Server error" });
     }
-
-    res.status(500).json({ error: "Server error" });
 }
 
 module.exports = { errorHandler, AppError };

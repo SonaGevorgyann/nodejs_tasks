@@ -17,10 +17,10 @@ function readJson(filePath, callback) {
     fs.readFile(filePath, "utf8", (error, text) => {
         if (error) {
             callback(error);
-            return;
         }
-
-        parseJson(text, callback);
+        else {
+            parseJson(text, callback);
+        }
     });
 }
 

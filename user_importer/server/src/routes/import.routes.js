@@ -7,10 +7,9 @@ router.post("/import", (req, res, next) => {
     importController.startImport((error) => {
         if (error) {
             next(error);
-            return;
+        } else {
+            res.status(202).json({ message: "Import started" });
         }
-
-        res.status(202).json({ message: "Import started" });
     });
 });
 

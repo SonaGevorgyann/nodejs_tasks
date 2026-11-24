@@ -19,19 +19,17 @@ class ImportJob extends EventEmitter {
         this.#readRecords((error, records) => {
             if (error) {
                 this.emit("error", error);
-                return;
+            } else {
+                const accepted = this.#processRecords(records);
+
+                this.#writeRecords(accepted, (writeError) => {
+                    if (writeError) {
+                        this.emit("error", writeError);
+                    } else {
+                        this.emit("completed");
+                    }
+                });
             }
-
-            const accepted = this.#processRecords(records);
-
-            this.#writeRecords(accepted, (writeError) => {
-                if (writeError) {
-                    this.emit("error", writeError);
-                    return;
-                }
-
-                this.emit("completed");
-            });
         });
     }
 
@@ -39,15 +37,11 @@ class ImportJob extends EventEmitter {
         readJson(this.inputPath, (error, records) => {
             if (error) {
                 callback(error);
-                return;
-            }
-
-            if (!Array.isArray(records)) {
+            } else if (!Array.isArray(records)) {
                 callback(new Error("Input JSON must be an array"));
-                return;
+            } else {
+                callback(null, records);
             }
-
-            callback(null, records);
         });
     }
 
@@ -59,13 +53,12 @@ class ImportJob extends EventEmitter {
 
             if (rejectionReason) {
                 this.emit("skipped", record, rejectionReason);
-                continue;
+            } else {
+                const acceptedRecord = this.#accept(record);
+
+                accepted.push(acceptedRecord);
+                this.emit("accepted", acceptedRecord);
             }
-
-            const acceptedRecord = this.#accept(record);
-
-            accepted.push(acceptedRecord);
-            this.emit("accepted", acceptedRecord);
         }
 
         return accepted;
