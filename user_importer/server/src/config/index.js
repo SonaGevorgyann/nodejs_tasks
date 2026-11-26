@@ -7,6 +7,7 @@ module.exports = {
     paths: {
         directoryFile: path.join(serverRoot, "output", "directory.json"),
         auditsDir: path.join(serverRoot, "output", "audits"),
+        uploadsDir: path.join(serverRoot, "uploads"),
         importInputFile: path.join(serverRoot, "input", "incoming.json"),
         importOutputFile: path.join(serverRoot, "output", "directory.json")
     }

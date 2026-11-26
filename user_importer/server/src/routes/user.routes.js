@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
+const { AppError } = require("../middlewares/error-handler");
 
+const upload = require("../middlewares/upload");
 const router = Router();
 
 router.get("/users", (req, res, next) => {
@@ -46,6 +48,23 @@ router.put("/users/:id", (req, res, next) => {
         }
     })
 
+});
+
+router.post("/users/:id/picture", upload.single("picture"), (req, res, next) => {
+    if (!req.file) {
+        next(new AppError(400, "Picture is required"));
+        return;
+    }
+
+    const picture = "/uploads/" + req.file.filename;
+
+    userController.updateUserPicture(req.params.id, picture, (error, user) => {
+        if (error) {
+            next(error);
+        } else {
+            res.json(user);
+        }
+    });
 });
 
 module.exports = router;

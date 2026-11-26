@@ -14,9 +14,17 @@
 
         <div class="column">
             <h2>Users</h2>
+
+            <div class="toolbar">
+                <input id="searchInput" type="text" placeholder="Search users by name...">
+                <select id="sortSelect">
+                    <option value="name">Sort by name</option>
+                    <option value="id">Sort by ID</option>
+                </select>
+            </div>
+
             <div id="usersLoader" class="loader" hidden>Loading users...</div>
             <div id="usersError" class="error" hidden></div>
-            <input id="searchInput" type="text" placeholder="Search users by name...">
             <div id="users"></div>
         </div>
 

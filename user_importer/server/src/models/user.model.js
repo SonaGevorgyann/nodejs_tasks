@@ -75,4 +75,29 @@ function updateById(id, name, callback) {
     }
 }
 
-module.exports = { readAll, readById, deleteById, updateById };
+
+function updatePictureById(id, picture, callback) {
+    readAll((error, users) => {
+        if (error) {
+            callback(error);
+        } else {
+            const user = users.find((item) => String(item.id) === String(id));
+
+            if (!user) {
+                callback(new AppError(404, "User not found"));
+            } else {
+                user.picture = picture;
+
+                writeJson(paths.directoryFile, users, (writeError) => {
+                    if (writeError) {
+                        callback(writeError);
+                    } else {
+                        callback(null, user);
+                    }
+                });
+            }
+        }
+    });
+}
+
+module.exports = { readAll, readById, deleteById, updateById, updatePictureById };

@@ -1,13 +1,98 @@
-[hidden] { display: none !important; }
+[hidden] {
+    display: none !important;
+}
 
-body { font-family: Arial, sans-serif; margin: 30px; background-color: #f5f5f5; }
-h1 { text-align: center; margin-bottom: 30px; }
-.dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-.column { background-color: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
-h2 { margin-top: 0; }
-.user { padding: 10px 0; border-bottom: 1px solid #eee; }
-select { width: 100%; padding: 10px; margin: 10px 0 20px; font-size: 16px; }
-#auditDetails { line-height: 1.8; }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 30px;
+}
 
-.loader { padding: 10px 0; color: #555; }
-.error { padding: 10px 0; color: #b00020; }
+h1 {
+    text-align: center;
+}
+
+.dashboard {
+    display: flex;
+    gap: 20px;
+}
+
+.column {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.toolbar input {
+    flex: 1;
+}
+
+input,
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.user-name {
+    flex: 1;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ddd;
+}
+
+.edit-input {
+    flex: 1;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e5e5;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.loader {
+    color: gray;
+}
+
+.error {
+    color: red;
+}

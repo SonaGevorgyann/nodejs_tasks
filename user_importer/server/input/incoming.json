@@ -10,5 +10,7 @@
   { "id": 3, "name": "Ani" },
   { "id": 2, "name": "Mariam" },
 
+  { "id": 1, "name": "Anna", "picture": "https://i.pravatar.cc/80?img=3" },
+
   null
 ]
