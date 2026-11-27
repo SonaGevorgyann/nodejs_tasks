@@ -20,4 +20,9 @@ function updateUserPicture(id, picture, callback) {
     userModel.updatePictureById(id, picture, callback);
 }
 
-module.exports = { getUsers, getUserById, deleteUser, updateUser, updateUserPicture };
+function deleteUserPicture(id, callback) {
+    userModel.deletePictureById(id, callback);
+}
+
+
+module.exports = { getUsers, getUserById, deleteUser, updateUser, updateUserPicture, deleteUserPicture };

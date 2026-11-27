@@ -179,6 +179,22 @@ function deleteUser(id) {
     }
 }
 
+
+function removePicture(id) {
+    if (confirm("Remove picture?")) {
+        usersError.hidden = true;
+
+        sendRequest("DELETE" , API_URL + "/users/" + id + "/picture", undefined, function(error) {
+            if(error) {
+                showError(usersError, error.message);
+            }
+            else {
+                loadUsers();
+            }
+        })
+    }
+}
+
 function updateUser(id, name) {
     usersError.hidden = true;
 
@@ -256,11 +272,19 @@ function renderUsers(users) {
                 }
             });
 
+
             const pictureButton = document.createElement("button");
-            pictureButton.textContent = "Change picture";
+            pictureButton.textContent = user.picture ? "Change picture" : "Add picture";
             pictureButton.addEventListener("click", function() {
                 fileInput.click();
             });
+
+            const removePictureButton = document.createElement("button");
+            removePictureButton.textContent = "Remove picture";
+            removePictureButton.addEventListener("click", function() {
+                removePicture(user.id);
+            });
+
 
             const deleteButton = document.createElement("button");
             deleteButton.className = "btn-danger";
@@ -269,15 +293,23 @@ function renderUsers(users) {
                 deleteUser(user.id);
             });
 
+
             div.appendChild(createAvatar(user));
             div.appendChild(label);
             div.appendChild(editButton);
             div.appendChild(pictureButton);
+
+            if (user.picture) {
+                div.appendChild(pictureButton);
+                div.appendChild(removePictureButton);
+            }
+
             div.appendChild(fileInput);
             div.appendChild(deleteButton);
 
             usersBox.appendChild(div);
         });
+
     }
 }
 

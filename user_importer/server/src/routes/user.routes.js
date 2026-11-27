@@ -67,4 +67,15 @@ router.post("/users/:id/picture", upload.single("picture"), (req, res, next) => 
     });
 });
 
+router.delete("/users/:id/picture", (req, res, next) => {
+    userController.deleteUserPicture(req.params.id, (error) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.status(204).end();
+        }
+    })
+})
+
 module.exports = router;
